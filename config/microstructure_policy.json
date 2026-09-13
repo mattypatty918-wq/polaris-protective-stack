@@ -1,0 +1,20 @@
+{
+  "tick_volume_ma_ratio": {
+    "lookback": 20,
+    "breakout_min_ratio": 1.2,
+    "mr_max_ratio": 1.5
+  },
+  "spread_liquidity": {
+    "max_spread_points": {"AUDUSD": 25, "NZDUSD": 30, "USDJPY": 25, "default": 30},
+    "skip_if_spread_z_gt": 2.0
+  },
+  "session_liquidity": {
+    "prefer_utc_hours": [7, 8, 9, 10, 11, 12, 13, 14, 15, 16],
+    "avoid_utc_hours": [21, 22, 23, 0, 1]
+  },
+  "range_to_atr": {"min_bar_range_atr": 0.25},
+  "depth_proxy": {
+    "method": "spread + tick_volume",
+    "note": "Retail FX CFDs often lack reliable DOM"
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "n_trials_assumed": 200,
+  "rules": {
+    "min_exp": 0,
+    "min_dsr_loose": 0.5,
+    "min_dsr_strict": 0.95,
+    "min_mc_frac_sr_gt_0": 0.55,
+    "max_dd": -0.12,
+    "mc_null_p_lt": 0.05
+  },
+  "preferred_symbols": ["AUDUSD", "NZDUSD", "USDJPY"],
+  "preferred_tfs": ["M30", "H1", "H2", "H4", "D1"]
+}
