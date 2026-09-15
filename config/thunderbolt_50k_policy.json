@@ -1,23 +1,19 @@
 {
   "profile": "THUNDERBOLT_50K",
   "account_size": 50000,
+  "default_lots": 0.1,
+  "max_lots": 0.5,
   "profit_target_pct": 4.0,
   "daily_dd_pct": 3.0,
   "max_dd_pct": 6.0,
   "soft_day_loss_pct": 2.5,
   "soft_max_dd_pct": 5.0,
   "risk_per_trade_pct": 0.35,
-  "max_lots": 0.5,
   "max_open": 2,
   "max_per_symbol": 1,
   "min_trading_days": 1,
   "time_limit_days": 30,
   "promote_requires": ["oos_exp>0", "dsr>0.5", "mc_P_profit>=0.55", "max_dd>-12pct"],
   "live_load_policy": "only_promoted_sleeves",
-  "demote_on": ["day_loss_breach", "correlated_stack", "no_sl", "lot_over_cap"],
-  "overnight_validation": {
-    "tfs": ["M30", "H1", "H2", "H4"],
-    "symbols": ["EURUSD", "GBPUSD", "USDJPY", "AUDUSD", "NZDUSD"],
-    "methods": ["WFO", "MonteCarlo", "DSR"]
-  }
+  "demote_on": ["day_loss_breach", "correlated_stack", "no_sl", "lot_over_cap"]
 }

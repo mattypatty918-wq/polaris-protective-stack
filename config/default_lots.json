@@ -1,0 +1,7 @@
+{
+  "default_lots": 0.1,
+  "min_lots": 0.01,
+  "max_lots_thunderbolt_50k": 0.5,
+  "max_lots_demo_flex": 0.5,
+  "notes": "Use 0.1 as standard EA fixed lot on 50k. Still enforce 1 position per symbol and max 2 open. Do not stack five 0.1 on same symbol."
+}
