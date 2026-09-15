@@ -1,0 +1,12 @@
+// PolarisInverseORB.mq5 - fade opening range break (validate before live)
+#property version "1.00"
+input int RangeStartHour=13; input int RangeEndHour=14; input int MaxTradeHour=18;
+input double Lots=0.10; input double MaxLots=0.50; input double SL_ATR_Mult=1.2; input double TP_R=1.5;
+input int ATRPeriod=14; input int Magic=26091401; input int MaxSpreadPts=25; input bool OnePerDay=true;
+double range_hi=0, range_lo=0; datetime range_day=0; bool traded_today=false; int hATR=INVALID_HANDLE;
+int OnInit(){ hATR=iATR(_Symbol,_Period,ATRPeriod); return hATR==INVALID_HANDLE?INIT_FAILED:INIT_SUCCEEDED; }
+void OnDeinit(const int r){ IndicatorRelease(hATR); }
+bool SpreadOk(){ long sp=SymbolInfoInteger(_Symbol,SYMBOL_SPREAD); return (sp>0 && sp<=MaxSpreadPts); }
+int CountMagic(){ int n=0; for(int i=PositionsTotal()-1;i>=0;i--){ if(!PositionSelectByTicket(PositionGetTicket(i))) continue; if(PositionGetInteger(POSITION_MAGIC)==Magic) n++; } return n; }
+void BuildRange(){ MqlDateTime dt; TimeToStruct(TimeCurrent(),dt); datetime d=StringToTime(StringFormat("%04d.%02d.%02d",dt.year,dt.mon,dt.day)); if(d!=range_day){ range_day=d; range_hi=0; range_lo=0; traded_today=false; } if(dt.hour>=RangeStartHour && dt.hour<RangeEndHour){ double hi=iHigh(_Symbol,PERIOD_M15,0), lo=iLow(_Symbol,PERIOD_M15,0); if(range_hi==0){ range_hi=hi; range_lo=lo; } else { if(hi>range_hi) range_hi=hi; if(lo<range_lo) range_lo=lo; } } }
+void OnTick(){ if(!TerminalInfoInteger(TERMINAL_TRADE_ALLOWED)) return; if(!SpreadOk()) return; BuildRange(); MqlDateTime dt; TimeToStruct(TimeCurrent(),dt); if(dt.hour<RangeEndHour||dt.hour>=MaxTradeHour) return; if(range_hi<=range_lo) return; if(OnePerDay&&traded_today) return; if(CountMagic()>0) return; double atr[]; ArraySetAsSeries(atr,true); if(CopyBuffer(hATR,0,0,2,atr)<2) return; double lots=MathMin(Lots,MaxLots); double bid=SymbolInfoDouble(_Symbol,SYMBOL_BID), ask=SymbolInfoDouble(_Symbol,SYMBOL_ASK); MqlTradeRequest req={}; MqlTradeResult res={}; req.action=TRADE_ACTION_DEAL; req.symbol=_Symbol; req.volume=lots; req.magic=Magic; req.deviation=20; req.comment="INV_ORB"; if(ask>range_hi){ req.type=ORDER_TYPE_SELL; req.price=bid; req.sl=bid+SL_ATR_Mult*atr[0]; req.tp=bid-TP_R*SL_ATR_Mult*atr[0]; if(OrderSend(req,res)) traded_today=true; } else if(bid<range_lo){ req.type=ORDER_TYPE_BUY; req.price=ask; req.sl=ask-SL_ATR_Mult*atr[0]; req.tp=ask+TP_R*SL_ATR_Mult*atr[0]; if(OrderSend(req,res)) traded_today=true; } }
